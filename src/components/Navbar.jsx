@@ -10,10 +10,10 @@ export const Navbar = () => {
 
                 <div className="flex flex-1 justify-center max-sm:hidden">
                     {navLists.map((nav, index) => (
-                        <div key={`${index}-${nav}`}>{nav}</div>
+                        <div key={`${index}-${nav}`} className="px-5 text-sm cursor-pointer text-gray hover:text-white transition-all">{nav}</div>
                     ))}
                 </div>
-                <div>
+                <div className="flex items-baseline gap-7 max-sm:justify-end max-sm:flex-1">
                     <img src={searchImg} alt="search-img" width={18} height={18} />
                     <img src={bagImg} alt="back" width={18} height={18} />
                 </div>
