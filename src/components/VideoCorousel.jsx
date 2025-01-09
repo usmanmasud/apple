@@ -22,20 +22,20 @@ export const VideoCorousel = () => {
     const { isEnd, isLastVideo, startPlay, videoId, isPlaying } = video;
 
     useGSAP(() => {
-        gsap.to('#video', {
+        gsap.to("#video", {
             scrollTrigger: {
-                trigger: '#video',
-                toggleActions: 'restart none none none',
+                trigger: "#video",
+                toggleActions: "restart none none none",
             },
             onComplete: () => {
                 setvideo((pre) => ({
                     ...pre,
                     startPlay: true,
-                    isPlaying: true
-                }))
-            }
-        })
-    }, [isEnd, videoId])
+                    isPlaying: true,
+                }));
+            },
+        });
+    }, [isEnd, videoId]);
 
     useEffect(() => {
         if (loadedData.length > 3) {
@@ -47,44 +47,100 @@ export const VideoCorousel = () => {
         }
     }, [startPlay, videoId, isPlaying, loadedData]);
 
-    const handleLoadedMetaData = (index, event) => setloadedData((pre) => [...pre, event])
+    const handleLoadedMetaData = (index, event) =>
+        setloadedData((pre) => [...pre, event]);
 
     useEffect(() => {
-        const currentProgress = 0;
+        let currentProgress = 0;
         let span = videoSpanRef.current;
 
         if (span[videoId]) {
             // animate the progress of the video
 
             let ainme = gsap.to(span[videoId], {
-                onUpdate: () => { },
-                onComplete: () => { },
+                onUpdate: () => {
+                    const progress = Math.ceil(ainme.progress() * 100);
+
+                    if (progress != currentProgress) {
+                        currentProgress = progress;
+
+                        gsap.to(videoDivRef.current[videoId], {
+                            width:
+                                window.innerWidth < 760
+                                    ? "10vw"
+                                    : window.innerWidth < 1200
+                                        ? "10vw"
+                                        : "4vw",
+                        });
+
+                        gsap.to(span[videoId], {
+                            width: `${currentProgress}%`,
+                            backgroundColor: 'white'
+                        })
+                    }
+                },
+                onComplete: () => {
+                    if (isPlaying) {
+                        gsap.to(videoDivRef.current[videoId], {
+                            width: '12px',
+                        })
+                        gsap.to(span[videoId], {
+                            backgroundColor: '#afafaf'
+                        })
+                    }
+                },
             });
+
+            if (videoId === 0) {
+                ainme.restart();
+            }
+
+            const animeUpdate = () => {
+                ainme.progress(videoRef.current[videoId] / hightlightsSlides[videoId].videoDuration)
+            }
+            if (isPlaying) {
+                gsap.ticker.add(animeUpdate)
+            } else {
+                gsap.ticker.remove(animeUpdate)
+            }
         }
+
+
     }, [videoId, startPlay]);
 
     const hanldeProcess = (type, index) => {
         switch (type) {
-            case 'vide-end':
-                setvideo((prevVideo) => ({ ...prevVideo, isEnd: true, videoId: index + 1 }))
+            case "vide-end":
+                setvideo((prevVideo) => ({
+                    ...prevVideo,
+                    isEnd: true,
+                    videoId: index + 1,
+                }));
                 break;
 
-            case 'video-last':
-                setvideo((prevVideo) => ({ ...prevVideo, isLastVideo: true }))
+            case "video-last":
+                setvideo((prevVideo) => ({ ...prevVideo, isLastVideo: true }));
                 break;
 
-            case 'video-reset':
-                setvideo((prevVideo) => ({ ...prevVideo, isLastVideo: false, videoId: 0 }));
+            case "video-reset":
+                setvideo((prevVideo) => ({
+                    ...prevVideo,
+                    isLastVideo: false,
+                    videoId: 0,
+                }));
                 break;
 
-            case 'paly':
-                setvideo((prevVideo) => ({ ...prevVideo, isPlaying: !prevVideo.isPlaying }))
+            case "paly":
+                setvideo((prevVideo) => ({
+                    ...prevVideo,
+                    isPlaying: !prevVideo.isPlaying,
+                }));
                 break;
 
             default:
                 return video;
         }
-    }
+    };
 
     return (
         <>
