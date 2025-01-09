@@ -22,6 +22,11 @@ export const VideoCorousel = () => {
     const { isEnd, isLastVideo, startPlay, videoId, isPlaying } = video;
 
     useGSAP(() => {
+        gsap.to('#slider', {
+            transform: `translateX(${-100 * videoId}%)`,
+            duration: 2,
+            ease: 'power2.inOut'
+        })
         gsap.to("#video", {
             scrollTrigger: {
                 trigger: "#video",
@@ -37,15 +42,6 @@ export const VideoCorousel = () => {
         });
     }, [isEnd, videoId]);
 
-    useEffect(() => {
-        if (loadedData.length > 3) {
-            if (!isPlaying) {
-                videoRef.current[videoId].pause();
-            } else {
-                startPlay && videoRef.current[videoId].play();
-            }
-        }
-    }, [startPlay, videoId, isPlaying, loadedData]);
 
     const handleLoadedMetaData = (index, event) =>
         setloadedData((pre) => [...pre, event]);
@@ -91,12 +87,12 @@ export const VideoCorousel = () => {
                 },
             });
 
-            if (videoId === 0) {
+            if (videoId == 0) {
                 ainme.restart();
             }
 
             const animeUpdate = () => {
-                ainme.progress(videoRef.current[videoId] / hightlightsSlides[videoId].videoDuration)
+                ainme.progress(videoRef.current[videoId].currentTime / hightlightsSlides[videoId].videoDuration)
             }
             if (isPlaying) {
                 gsap.ticker.add(animeUpdate)
@@ -108,9 +104,22 @@ export const VideoCorousel = () => {
 
     }, [videoId, startPlay]);
 
+    useEffect(() => {
+        if (loadedData.length > 3) {
+            if (!isPlaying) {
+                videoRef.current[videoId].pause();
+            } else {
+                startPlay && videoRef.current[videoId].play();
+            }
+        }
+    }, [startPlay, videoId, isPlaying, loadedData]);
+
+
+
+
     const hanldeProcess = (type, index) => {
         switch (type) {
-            case "vide-end":
+            case "video-end":
                 setvideo((prevVideo) => ({
                     ...prevVideo,
                     isEnd: true,
@@ -155,6 +164,11 @@ export const VideoCorousel = () => {
                                     preload="auto"
                                     muted
                                     ref={(el) => (videoRef.current[index] = el)}
+                                    onEnded={() =>
+                                        index !== 3
+                                            ? hanldeProcess('video-end', index)
+                                            : hanldeProcess('video-last')
+                                    }
                                     onPlay={() =>
                                         setvideo((prevVideo) => ({
                                             ...prevVideo,
