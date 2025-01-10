@@ -1,7 +1,18 @@
-import React from 'react'
+import { View } from "@react-three/drei";
+import React from "react";
 
-export const ModelView = () => {
+export const ModelView = ({
+    index,
+    groupRef,
+    gsapType,
+    controlRef,
+    setRotationState,
+    item,
+    size,
+}) => {
     return (
-        <div>ModelView</div>
+        <View index={index} id={gsapType} className="border-2 border-red-500 w-full h-full">
+
+        </View>
     )
-}
+};
