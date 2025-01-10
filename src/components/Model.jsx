@@ -3,6 +3,7 @@ import gsap from "gsap";
 import React, { useRef, useState } from "react";
 import { ModelView } from "./ModelView";
 import { yellowImg } from '../utils'
+import * as THREE from 'three'
 
 export const Model = () => {
     const [size, setSize] = useState('small');
