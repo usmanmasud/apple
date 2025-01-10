@@ -22,7 +22,7 @@ export const ModelView = ({
             <Lights />
 
             <Suspense fallback={<div>Loading</div>}>
-                {/* <Iphone /> */}
+                <Iphone />
             </Suspense>
         </View>
     )
