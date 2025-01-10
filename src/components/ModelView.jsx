@@ -3,6 +3,7 @@ import React, { Suspense } from "react";
 import Lights from './Light'
 import Iphone from "./Iphone";
 import * as THREE from 'three'
+import { Loader } from "./Loader";
 
 export const ModelView = ({
     index,
@@ -33,7 +34,7 @@ export const ModelView = ({
             />
 
             <group ref={groupRef} name={`${index === 1 ? 'small' : 'large'}`} position={[0, 0, 0]}>
-                <Suspense fallback={<div>Loading</div>}>
+                <Suspense fallback={<Loader />}>
                     <Iphone
                         scale={index === 1 ? [15, 15, 15] : [17, 17, 17]}
                         item={item}
